@@ -1,0 +1,385 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>من سيربح المليون أوقية - نسخة الصحراء الشاملة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Reem+Kufi:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --mrt-green: #006233;
+            --mrt-gold: #ffd700;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #000c05;
+            color: white;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Full Screen Containers */
+        #landing-ui, #game-ui {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        #landing-ui {
+            background: linear-gradient(to bottom, #000c05 0%, #004d26 100%);
+            z-index: 50;
+        }
+
+        .social-links-top-left { position: absolute; top: 20px; left: 20px; z-index: 100; display: flex; gap: 15px; }
+        .support-btn-top-right {
+            position: absolute; top: 20px; right: 20px; z-index: 100;
+            background: rgba(0, 98, 51, 0.8); border: 2px solid var(--mrt-gold);
+            padding: 8px 15px; border-radius: 50px; color: var(--mrt-gold);
+            font-weight: bold; display: flex; align-items: center; gap: 8px;
+            cursor: pointer; backdrop-filter: blur(5px); transition: 0.3s;
+        }
+
+        .social-icon {
+            width: 45px; height: 45px; background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--mrt-gold); text-decoration: none; transition: 0.3s;
+        }
+
+        .desert-dunes { position: absolute; bottom: 0; left: 0; width: 100%; height: 30vh; background: #c29b6d; clip-path: ellipse(80% 100% at 50% 100%); z-index: 5; }
+        .camel-silhouette { position: absolute; bottom: 18vh; left: 20%; font-size: 4rem; z-index: 7; animation: camelWalk 25s linear infinite; }
+        @keyframes camelWalk { from { transform: translateX(-150vw); } to { transform: translateX(150vw); } }
+
+        .hero-title {
+            font-family: 'Reem Kufi', sans-serif;
+            font-size: clamp(3rem, 10vw, 5rem);
+            background: linear-gradient(to bottom, #fff, #ffd700);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            z-index: 10; text-align: center; line-height: 1.1;
+        }
+
+        .start-btn {
+            z-index: 20; padding: 1.2rem 4rem;
+            background: linear-gradient(180deg, var(--mrt-gold), #b8860b);
+            color: #000; font-weight: 900; font-size: 2rem;
+            border-radius: 60px; border: 4px solid #fff;
+            transition: 0.4s; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Game UI */
+        #game-ui {
+            background: radial-gradient(circle at center, #001f0f 0%, #000c05 100%);
+            z-index: 40;
+            display: none;
+        }
+
+        .q-box {
+            background: linear-gradient(180deg, #0a3d24 0%, #000 100%);
+            border: 3px solid var(--mrt-gold);
+            border-radius: 30px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+        }
+
+        .ans-btn {
+            background: linear-gradient(180deg, #001f0f 0%, #000 100%);
+            border: 2px solid #333;
+            border-radius: 50px;
+            padding: 18px 30px;
+            width: 100%;
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .ans-btn:hover { border-color: var(--mrt-gold); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1); }
+        .ans-btn.correct { background: linear-gradient(180deg, #059669, #064e3b) !important; border-color: #10b981 !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+        .ans-btn.wrong { background: linear-gradient(180deg, #dc2626, #7f1d1d) !important; border-color: #ef4444 !important; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+
+        .sidebar { background: rgba(0,0,0,0.85); border: 1px solid var(--mrt-gold); border-radius: 20px; width: 220px; padding: 15px; height: fit-content; }
+        .prize-row { display: flex; justify-content: space-between; padding: 3px 12px; color: #666; font-size: 0.9rem; border-radius: 6px; margin-bottom: 2px; }
+
+        /* Disclaimer Modal */
+        .modal-bg {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .modal-content {
+            background: #111; border: 3px solid var(--mrt-gold);
+            max-width: 500px; width: 100%; border-radius: 35px; padding: 35px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Disclaimer Modal (The message from Developer Kamal) -->
+    <div id="disclaimer-modal" class="modal-bg">
+        <div class="modal-content">
+            <div class="text-yellow-500 text-6xl mb-4"><i class="fas fa-shield-alt"></i></div>
+            <h2 class="text-2xl font-bold mb-4 text-white">رسالة من المطور كمال</h2>
+            <div class="text-gray-300 leading-relaxed mb-6 space-y-4 text-lg">
+                <p>أهلاً بك في مسابقتنا الثقافية الموريتانية.</p>
+                <p class="border-y border-yellow-500/30 py-3">
+                    أؤكد لكم أن <span class="text-yellow-500 font-bold">هذه ليست "رباع" (قمار)</span> بل هي مجرد لعبة للتسلية واختبار ثقافتك العامة فقط.
+                </p>
+                <p>
+                    نحن <span class="text-red-500 font-bold">نحارب الربا</span> والمقامرة بكل أشكالها، ولا توجد مبالغ حقيقية في هذه اللعبة؛ فالجوائز رقمية وهمية للتحفيز المعرفي لا غير.
+                </p>
+            </div>
+            <button onclick="acceptDisclaimer()" class="bg-yellow-500 text-black font-black py-4 px-12 rounded-full hover:scale-105 transition duration-300 shadow-lg shadow-yellow-500/20">أوافق وأفهم ذلك</button>
+        </div>
+    </div>
+
+    <!-- Landing UI -->
+    <div id="landing-ui">
+        <div class="social-links-top-left">
+            <a href="https://www.facebook.com/share/18XyBrMzKY/" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.tiktok.com/@hhfufjdg?_r=1&_t=ZS-95SR1m43XJE" target="_blank" class="social-icon"><i class="fab fa-tiktok"></i></a>
+        </div>
+        <div onclick="openSupport()" class="support-btn-top-right"><i class="fas fa-headset"></i><span>الدعم الفني</span></div>
+        <div class="camel-silhouette">🐪</div>
+        <div class="desert-dunes"></div>
+        <div class="z-10 text-center px-4">
+            <h1 class="hero-title">من سيربح<br>المليون أوقية</h1>
+            <p class="text-yellow-500 font-bold tracking-[0.3em] mt-6 mb-12">موريتانيا 🇲🇷 بلاد المليون شاعر</p>
+            <button onclick="startGame()" class="start-btn">ابدأ المسابقة</button>
+        </div>
+        <div class="absolute bottom-4 text-gray-500 text-xs z-30">تطوير: كمال</div>
+    </div>
+
+    <!-- Game UI -->
+    <div id="game-ui">
+        <div class="flex flex-col lg:flex-row items-center justify-center gap-10 w-full h-full p-6">
+            <div id="prize-sidebar" class="sidebar hidden lg:block"></div>
+            <div class="w-full max-w-4xl flex flex-col items-center">
+                <div class="flex justify-center gap-4 mb-8">
+                    <button class="w-16 h-12 bg-black border-2 border-yellow-500 rounded-full text-yellow-500 font-bold hover:bg-yellow-500 hover:text-black transition">50:50</button>
+                    <button class="w-16 h-12 bg-black border-2 border-yellow-500 rounded-full text-yellow-500 font-bold hover:bg-yellow-500 hover:text-black transition">📞</button>
+                    <button class="w-16 h-12 bg-black border-2 border-yellow-500 rounded-full text-yellow-500 font-bold hover:bg-yellow-500 hover:text-black transition">👥</button>
+                </div>
+                <div class="q-box w-full mb-8">
+                    <h2 id="q-text" class="text-2xl md:text-3xl font-bold leading-relaxed"></h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                    <button onclick="checkAnswer(0)" class="ans-btn" id="opt-0"><span class="text-yellow-500 font-black ml-4">أ:</span><span class="label"></span></button>
+                    <button onclick="checkAnswer(1)" class="ans-btn" id="opt-1"><span class="text-yellow-500 font-black ml-4">ب:</span><span class="label"></span></button>
+                    <button onclick="checkAnswer(2)" class="ans-btn" id="opt-2"><span class="text-yellow-500 font-black ml-4">ج:</span><span class="label"></span></button>
+                    <button onclick="checkAnswer(3)" class="ans-btn" id="opt-3"><span class="text-yellow-500 font-black ml-4">د:</span><span class="label"></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Modal -->
+    <div id="support-modal" class="fixed inset-0 bg-black/95 hidden z-[400] flex items-center justify-center p-6 backdrop-blur-md">
+        <div class="bg-zinc-900 border-2 border-yellow-500 p-8 rounded-[40px] w-full max-w-md text-center">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="closeSupport()" class="text-gray-500 text-4xl hover:text-white">&times;</button>
+                <h3 class="text-2xl font-bold text-yellow-500">مركز المساعدة</h3>
+            </div>
+            <div id="support-list">
+                <div class="support-option-box p-4 border border-zinc-700 rounded-xl mb-2 flex justify-between cursor-pointer hover:bg-zinc-800" onclick="selectIssue(this, 'اللعبة تتوقف فجأة')"><span>اللعبة تتوقف فجأة</span><i class="fas fa-bug text-red-500"></i></div>
+                <div class="support-option-box p-4 border border-zinc-700 rounded-xl mb-2 flex justify-between cursor-pointer hover:bg-zinc-800" onclick="selectIssue(this, 'اقتراح أسئلة جديدة')"><span>اقتراح أسئلة جديدة</span><i class="fas fa-lightbulb text-yellow-500"></i></div>
+                <div class="support-option-box p-4 border border-zinc-700 rounded-xl mb-2 flex justify-between cursor-pointer hover:bg-zinc-800" onclick="selectIssue(this, 'تبليغ عن خطأ في سؤال')"><span>تبليغ عن خطأ في سؤال</span><i class="fas fa-exclamation-triangle text-orange-500"></i></div>
+            </div>
+            <button id="send-btn" class="w-full bg-green-600 text-white font-bold py-3 rounded-full mt-4" onclick="triggerSend()">إرسال للدعم</button>
+        </div>
+    </div>
+
+    <script>
+        const allQuestions = [
+            { q: "ما هي عاصمة موريتانيا؟", a: ["نواذيبو", "نواكشوط", "أطار", "روصو"], c: 1 },
+            { q: "ما هي العملة الرسمية في موريتانيا؟", a: ["الفرنك", "الدرهم", "الأوقية", "الدينار"], c: 2 },
+            { q: "في أي عام نالت موريتانيا استقلالها عن فرنسا؟", a: ["1958", "1960", "1962", "1970"], c: 1 },
+            { q: "ما هو لقب المنتخب الوطني الموريتاني لكرة القدم؟", a: ["أسود التيرانجا", "المرابطون", "محاربو الصحراء", "النسور"], c: 1 },
+            { q: "ما هي الولاية التي تعتبر العاصمة الاقتصادية لموريتانيا؟", a: ["داخلت نواذيبو", "تيرس زمور", "اترارزة", "الحوض الشرقي"], c: 0 },
+            { q: "ما هي المدينة التاريخية التي تلقب بـ 'مدينة العلماء'؟", a: ["أكجوجت", "شنقيط", "كيهيدي", "بوكي"], c: 1 },
+            { q: "ما هو أعلى جبل في موريتانيا؟", a: ["جبل توبقال", "كدية الجل", "جبل العوينات", "جبل شمس"], c: 1 },
+            { q: "من هو أول رئيس للجمهورية الإسلامية الموريتانية؟", a: ["المصطفى ولد محمد السالك", "المختار ولد داداه", "معاوية ولد الطايع", "محمد خونة ولد هيدالة"], c: 1 },
+            { q: "ما هي الولاية التي يقع فيها منجم الحديد الرئيسي؟", a: ["آدرار", "تيرس زمور", "إنشيري", "تكانت"], c: 1 },
+            { q: "ما هي الآلة الموسيقية التقليدية التي تعزف عليها المرأة الموريتانية؟", a: ["التيدنيت", "الأردين", "النيفارة", "الطبل"], c: 1 },
+            { q: "كم عدد الولايات في موريتانيا حالياً؟", a: ["12", "13", "15", "18"], c: 2 },
+            { q: "ما هو الميناء الرئيسي لتصدير النفط والغاز في موريتانيا؟", a: ["ميناء الصداقة", "ميناء نواذيبو المستقل", "ميناء التانيت", "ميناء انجاغو"], c: 0 },
+            { q: "ما هو أطول نهر يحد موريتانيا من الجنوب؟", a: ["نهر النيل", "نهر السنغال", "نهر النيجر", "نهر الكونغو"], c: 1 },
+            { q: "في أي مدينة موريتانية يوجد 'مستشفى حمد بن خليفة'؟", a: ["بوتلميت", "النعمة", "لعيون", "كيفة"], c: 0 },
+            { q: "ما هي المدينة الموريتانية التي تشتهر بصناعة السفن التقليدية؟", a: ["نواكشوط", "نواذيبو", "روصو", "كيهيدي"], c: 1 },
+            { q: "ما هو الحيوان الذي يرمز للصبر والقوة في الثقافة الصحراوية الموريتانية؟", a: ["الحصان", "الجمل", "الغزال", "الأسد"], c: 1 },
+            { q: "ما هي المدينة الموريتانية التي تقع في أقصى شرق البلاد؟", a: ["النعمة", "باسكنو", "تمبدغة", "ولاتة"], c: 1 },
+            { q: "ما هو الاسم الشعبي للشاي الموريتاني؟", a: ["الزر", "الأتاي", "المظبوخ", "المنعنع"], c: 1 },
+            { q: "ما هي المدينة التي تقع فيها 'حفرة الريشات' أو عين الصحراء؟", a: ["وادان", "شنقيط", "تيشيت", "ولاتة"], c: 0 },
+            { q: "أي من هذه المدن الموريتانية مصنفة ضمن التراث العالمي لليونسكو؟", a: ["أكجوجت", "تيشيت", "تجكجة", "سيلبابي"], c: 1 },
+            { q: "ما هي أكبر ولاية موريتانية من حيث المساحة؟", a: ["الحوض الشرقي", "تيرس زمور", "آدرار", "تكانت"], c: 1 },
+            { q: "ما هو الزي التقليدي الرجالي في موريتانيا؟", a: ["القفطان", "الدراعة", "الجلابة", "البشت"], c: 1 },
+            { q: "متى يتم الاحتفال بعيد الاستقلال الوطني في موريتانيا؟", a: ["28 نوفمبر", "12 ديسمبر", "1 يناير", "5 يوليو"], c: 0 },
+            { q: "ما هو الرمز الدولي للهاتف في موريتانيا؟", a: ["+212", "+221", "+222", "+213"], c: 2 },
+            { q: "ما هي الولاية التي عاصمتها مدينة 'سيلبابي'؟", a: ["كيدي ماغا", "كوركول", "لبراكنة", "لعصابة"], c: 0 },
+            { q: "من هو الفقيه الموريتاني الذي وضع أول دستور للبلاد؟", a: ["با ممدو صمبا بولي", "الشيخ بن حَمَّى", "محمد ولد الشيخ", "المختار ولد داداه"], c: 1 },
+            { q: "ما هو الاسم الأصلي لمنطقة 'آدرار' في الخرائط البرتغالية القديمة؟", a: ["مونتي كلارو", "بورتو غراندي", "كاب بلانكو", "تيرس الغربية"], c: 0 },
+            { q: "في أي عام تأسست أول مدرسة نظامية في مدينة بوتلميت؟", a: ["1910", "1914", "1920", "1905"], c: 1 },
+            { q: "ما هو الارتفاع الدقيق لقمة 'كدية الجل'؟", a: ["915 متر", "850 متر", "1010 متر", "780 متر"], c: 0 },
+            { q: "من هو الشاعر الموريتاني صاحب ديوان 'أغاني الوطن'؟", a: ["محمد ولد عبدي", "أحمدو ولد عبد القادر", "محمد الحافظ ولد أحمدو", "كابر هاشم"], c: 1 },
+            { q: "ما هي المعركة التي استشهد فيها القائد الفرنسي 'كزافييه كبولاني'؟", a: ["معركة تجكجة", "معركة أم التونسي", "معركة النيملان", "معركة لعيون"], c: 0 },
+            { q: "في أي سنة تم إنشاء العملة الوطنية (الأوقية)؟", a: ["1970", "1973", "1975", "1968"], c: 1 },
+            { q: "ما هي المدينة التي كانت تسمى 'آزوكي' قديماً؟", a: ["آزوكي", "وادان", "أوجفت", "كصر البركة"], c: 0 },
+            { q: "ما هو العمق الأقصى لمنجم 'قلب الغين' للحديد؟", a: ["200 متر", "350 متر", "400 متر", "500 متر"], c: 2 },
+            { q: "من هو العالم الموريتاني الذي ألف كتاب 'فتح الشكور'؟", a: ["البرتلي الولاتي", "ابن الأعمش العلوي", "النابغة القلاوي", "المختار ولد بونعمة"], c: 0 },
+            { q: "أي من هذه الأودية يعتبر الأطول في منطقة الحوض الشرقي؟", a: ["وادي كراكر", "وادي الحطب", "وادي لعصابة", "وادي الشاش"], c: 1 },
+            { q: "ما هي الاتفاقية التي بموجبها انسحبت موريتانيا من 'تيرس الغربية'؟", a: ["اتفاقية الجزائر", "اتفاقية مدريد", "اتفاقية أكادير", "اتفاقية لوساكا"], c: 0 },
+            { q: "ما هو الاسم العلمي للشجرة التي يستخرج منها 'العلك'؟", a: ["أكاسيا سينغال", "أكاسيا نيلوتيكا", "بلانيتس أيجيبتياكا", "زيزيفوس موريشيانا"], c: 0 },
+            { q: "من هو أول أمين عام موريتاني لمنظمة (OMVS)؟", a: ["أحمد ولد سيدي بابا", "الشيخ ولد أحمدو", "المختار ولد هيبة", "محمد ولد هيبة"], c: 0 },
+            { q: "في أي ولاية تقع محمية 'جاولينج' الطبيعية؟", a: ["اترارزة", "لبراكنة", "كيدي ماغا", "داخلت نواذيبو"], c: 0 },
+            { q: "ما هي القبيلة التي أسست إمارة 'آدرار' تاريخياً؟", a: ["إدوعيش", "أهل عثمان", "أولاد يحيى بن عثمان", "مشظوف"], c: 2 },
+            { q: "ما هو طول السكة الحديدية بين 'الزويرات' و 'نواذيبو'؟", a: ["650 كم", "704 كم", "800 كم", "550 كم"], c: 1 },
+            { q: "من هو الأديب الموريتاني الذي فاز بجائزة 'نجيب محفوظ'؟", a: ["موسى ولد ابنو", "محمد ولد محمد سالم", "ممد ولد أحمد", "المختار ولد السعد"], c: 1 },
+            { q: "ما هو الاسم القديم لمدينة 'لعيون' عاصمة الحوض الغربي؟", a: ["لعيون العتروس", "فم لعيون", "تكانت الغربية", "انيفرار"], c: 0 },
+            { q: "في أي عام تم اكتشاف حقل 'شنقيط' النفطي؟", a: ["2001", "1998", "2005", "2003"], c: 0 },
+            { q: "ما هو لقب الفقيه 'سيدي عبد الله ولد الحاج إبراهيم'؟", a: ["صاحب مراقي السعود", "صاحب النوازل", "قاضي القضاة", "مجدد القرن"], c: 0 },
+            { q: "أي مدينة كانت مركزاً لقيادة المستعمر قبل نواكشوط؟", a: ["سانت لويس (اندر)", "داكار", "روصو", "نواذيبو"], c: 0 },
+            { q: "ما هي أعلى درجة حرارة مسجلة رسمياً في مدينة 'أطار'؟", a: ["48 درجة", "50 درجة", "52 درجة", "45 درجة"], c: 2 },
+            { q: "من هو الملحن الذي وضع ألحان النشيد الوطني القديم؟", a: ["بابا ولد هيدالة", "سيداتي ولد آبه", "سيبويه ولد المجلسي", "توفا غاي"], c: 1 },
+            { q: "ما هي 'السبخة' الأكبر في الشمال الموريتاني؟", a: ["سبخة الجميلة", "سبخة ندرهامشا", "سبخة ماري", "سبخة آمليل"], c: 1 },
+            { q: "أي ملك مغربي زار موريتانيا في رحلة تاريخية عام 2001؟", a: ["الحسن الثاني", "محمد السادس", "محمد الخامس", "مولاي رشيد"], c: 1 },
+            { q: "ما هو النوع الموريتاني من الإبل المشهور بسرعته؟", a: ["آزاييل", "المهارى", "البخت", "القعدان"], c: 1 },
+            { q: "في أي سنة تم تأسيس جامعة نواكشوط؟", a: ["1981", "1975", "1985", "1990"], c: 0 },
+            { q: "ما هو الاسم الجغرافي للمنطقة التي تفصل بين آدرار وتكانت؟", a: ["الخط", "ظهر تكانت", "كاف الركيبة", "آكشار"], c: 2 },
+            { q: "من هو القائد الذي قاد معركة 'ودان' عام 1912؟", a: ["الشيخ ماء العينين", "أحمد ولد أيدَّه", "بكار ولد أحمدو", "سيدي ولد مولاي الزين"], c: 1 },
+            { q: "ما هي المادة الخام التي تستخرج من 'أكجوجت'؟", a: ["الفوسفات", "النحاس", "الجبس", "الملح"], c: 1 },
+            { q: "ما هو اسم البحيرة الموسمية الكبيرة في ولاية 'لبراكنة'؟", a: ["بحيرة الركيز", "بحيرة مال", "بحيرة كنكوصة", "بحيرة محمودة"], c: 1 },
+            { q: "من هو أول موريتاني شغل منصب رئيس الجمعية العامة للأمم المتحدة؟", a: ["با ممدو امباري", "حمادي ولد اميمو", "لم يكن هناك موريتاني", "سيدي محمد ولد بوبكر"], c: 2 },
+            { q: "ما هي المدينة التي تشتهر بـ 'مخطوطات ولاتة'؟", a: ["ولاتة", "تمبدغة", "جكني", "النعمة"], c: 0 },
+            { q: "ما هو الاسم الشعبي لنوع من 'الكسكس' الموريتاني الغليظ؟", a: ["البصام", "العيش", "بلغمان", "كسكس بالحوت"], c: 1 },
+            { q: "في أي عام تم تنظيم أول مهرجان للمدن القديمة؟", a: ["2011", "2012", "2010", "2009"], c: 0 },
+            { q: "ما هي الولاية التي تقع فيها مدينة 'باركيول'؟", a: ["لعصابة", "كوركول", "كيدي ماغا", "لبراكنة"], c: 0 },
+            { q: "ما هو اسم القمر الصناعي الموريتاني الأول؟", a: ["موريسات-1", "شنقيط-1", "لا يوجد حالياً", "ناصر-1"], c: 2 },
+            { q: "أي من هذه الأنهار الجافة يصب في المحيط الأطلسي؟", a: ["وادي الشبكة", "وادي كراكر", "وادي ميرة", "وادي الساقية"], c: 0 },
+            { q: "من هو الفنان الموريتاني الراحل الملقب بـ 'فنان الشعب'؟", a: ["ديمي بنت آبه", "الخليفة ولد ايدَّه", "سيداتي ولد آبه", "ببا ولد النانة"], c: 1 },
+            { q: "ما هي أكبر جزيرة في أرخبيل 'حوض آرغين'؟", a: ["جزيرة تيدرة", "جزيرة آمي", "جزيرة كياون", "جزيرة نيرومي"], c: 0 },
+            { q: "ما هي المدينة الموريتانية التي تسمى 'بوابة الصحراء'؟", a: ["أكجوجت", "أطار", "تجكجة", "خاي"], c: 1 },
+            { q: "في أي عهد رئاسي تم إقرار نظام 'التعددية الحزبية'؟", a: ["معاوية ولد الطايع", "محمد خونة ولد هيدالة", "المختار ولد داداه", "اعل ولد محمد فال"], c: 0 },
+            { q: "ما هو اسم الهضبة الصخرية التي تقع عليها مدينة 'تشيت'؟", a: ["هضبة آدرار", "هضبة تكانت", "هضبة الحوض", "هضبة إنشيري"], c: 1 },
+            { q: "ما هي لغة 'السوننكي' في التصنيف اللغوي؟", a: ["لغة أفرو-آسيوية", "لغة نيجيرية-كونغولية", "لغة صحراوية", "لغة نيلية"], c: 1 },
+            { q: "ما هو الاسم التاريخي لميناء 'نواذيبو'؟", a: ["بورت إتيان", "بورت لويس", "سان بيدرو", "بورتو نوفو"], c: 0 },
+            { q: "كم بلغت ميزانية موريتانيا في أول سنة استقلال؟", a: ["10 ملايين دولار", "2.5 مليار فرنك", "500 مليون أوقية", "مليار فرنك"], c: 1 },
+            { q: "ما هي الشجرة التي تسمى 'تيدوم'؟", a: ["الباوباب", "الطلح", "السدر", "القتاد"], c: 0 },
+            { q: "من هو أمير آدرار الذي واجه الاستعمار في 'حمدون'؟", a: ["أحمد ولد أيدَّه", "سيدي ولد مولاي الزين", "محمد لحبيب", "أعمر ولد المختار"], c: 0 },
+            { q: "ما هو اسم أول جريدة صدرت في موريتانيا؟", a: ["الشعب", "القلم", "أخبار موريتانيا", "موريتانيا الجديدة"], c: 0 }
+        ];
+
+        let currentSet = [];
+        let step = 0;
+        let isProcessing = false;
+        const moneyArr = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
+
+        function acceptDisclaimer() {
+            document.getElementById('disclaimer-modal').style.display = 'none';
+        }
+
+        function startGame() {
+            currentSet = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 15);
+            const landing = document.getElementById('landing-ui');
+            const game = document.getElementById('game-ui');
+            landing.style.opacity = '0';
+            setTimeout(() => {
+                landing.style.display = 'none';
+                game.style.display = 'flex';
+                game.style.opacity = '1';
+                renderSidebar();
+                loadQuestion();
+            }, 500);
+        }
+
+        function renderSidebar() {
+            const side = document.getElementById('prize-sidebar');
+            side.innerHTML = moneyArr.slice().reverse().map((m, i) => {
+                const idx = 14 - i;
+                return `<div class="prize-row" id="row-${idx}"><span>${idx + 1}</span><span>${m.toLocaleString()}</span></div>`;
+            }).join('');
+        }
+
+        function loadQuestion() {
+            isProcessing = false;
+            const qData = currentSet[step];
+            document.getElementById('q-text').innerText = qData.q;
+            for(let i=0; i<4; i++) {
+                const btn = document.getElementById(`opt-${i}`);
+                btn.querySelector('.label').innerText = qData.a[i];
+                btn.classList.remove('correct', 'wrong');
+            }
+            updateSidebar();
+        }
+
+        function updateSidebar() {
+            document.querySelectorAll('.prize-row').forEach(r => { 
+                r.style.color = "#666"; r.style.background = "transparent"; r.style.fontWeight = "normal";
+            });
+            const active = document.getElementById(`row-${step}`);
+            if(active) { 
+                active.style.color = "black"; active.style.background = "#ffd700"; active.style.fontWeight = "bold"; 
+            }
+        }
+
+        function checkAnswer(idx) {
+            if(isProcessing) return;
+            isProcessing = true;
+            const correctIdx = currentSet[step].c;
+            const selectedBtn = document.getElementById(`opt-${idx}`);
+            const correctBtn = document.getElementById(`opt-${correctIdx}`);
+
+            if(idx === correctIdx) {
+                selectedBtn.classList.add('correct');
+                setTimeout(() => {
+                    step++;
+                    if(step < 15) loadQuestion();
+                    else { alert('تبروك! لقد فزت بمليون أوقية وهمية!'); location.reload(); }
+                }, 1000);
+            } else {
+                selectedBtn.classList.add('wrong');
+                correctBtn.classList.add('correct');
+                setTimeout(() => {
+                    alert('إجابة خاطئة! حظاً موفقاً في المرة القادمة.');
+                    location.reload();
+                }, 1500);
+            }
+        }
+
+        let selIssue = "";
+        function openSupport() { document.getElementById('support-modal').classList.remove('hidden'); }
+        function closeSupport() { document.getElementById('support-modal').classList.add('hidden'); }
+        function selectIssue(el, txt) {
+            document.querySelectorAll('.support-option-box').forEach(b => b.classList.remove('bg-zinc-800'));
+            el.classList.add('bg-zinc-800');
+            selIssue = txt;
+        }
+        function triggerSend() {
+            if(!selIssue) return;
+            window.open(`https://wa.me/qr/M53QU6UR7ZSZM1?text=${encodeURIComponent("أواجه مشكلة بخصوص: " + selIssue)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
+
+
