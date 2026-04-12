@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>من سيربح المليون أوقية - نسخة الصحراء الشاملة</title>
+    <title>من سيربح المليون أوقية - النسخة الموريتانية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Reem+Kufi:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,7 +24,6 @@
             overflow: hidden;
         }
 
-        /* Full Screen Containers */
         #landing-ui, #game-ui {
             position: fixed;
             top: 0;
@@ -45,8 +43,9 @@
         }
 
         .social-links-top-left { position: absolute; top: 20px; left: 20px; z-index: 100; display: flex; gap: 15px; }
+        
         .support-btn-top-right {
-            position: absolute; top: 20px; right: 20px; z-index: 100;
+            position: absolute; right: 20px; z-index: 100;
             background: rgba(0, 98, 51, 0.8); border: 2px solid var(--mrt-gold);
             padding: 8px 15px; border-radius: 50px; color: var(--mrt-gold);
             font-weight: bold; display: flex; align-items: center; gap: 8px;
@@ -81,7 +80,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Game UI */
         #game-ui {
             background: radial-gradient(circle at center, #001f0f 0%, #000c05 100%);
             z-index: 40;
@@ -116,13 +114,13 @@
         .ans-btn.correct { background: linear-gradient(180deg, #059669, #064e3b) !important; border-color: #10b981 !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
         .ans-btn.wrong { background: linear-gradient(180deg, #dc2626, #7f1d1d) !important; border-color: #ef4444 !important; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
 
-        .sidebar { background: rgba(0,0,0,0.85); border: 1px solid var(--mrt-gold); border-radius: 20px; width: 220px; padding: 15px; height: fit-content; }
-        .prize-row { display: flex; justify-content: space-between; padding: 3px 12px; color: #666; font-size: 0.9rem; border-radius: 6px; margin-bottom: 2px; }
+        .sidebar { background: rgba(0,0,0,0.85); border: 1px solid var(--mrt-gold); border-radius: 20px; width: 220px; padding: 15px; height: 90%; overflow-y: auto; scrollbar-width: none; }
+        .sidebar::-webkit-scrollbar { display: none; }
+        .prize-row { display: flex; justify-content: space-between; padding: 2px 10px; color: #666; font-size: 0.8rem; border-radius: 6px; margin-bottom: 1px; }
 
-        /* Disclaimer Modal */
         .modal-bg {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-            z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px;
+            z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px;
             backdrop-filter: blur(10px);
         }
         .modal-content {
@@ -131,12 +129,33 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
+        .bottom-progress {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(0,0,0,0.9); border-top: 2px solid var(--mrt-gold);
+            padding: 15px; text-align: center; z-index: 100;
+        }
+        .progress-bar-container {
+            width: 80%; max-width: 600px; height: 10px; background: #222;
+            border-radius: 10px; margin: 10px auto; overflow: hidden; border: 1px solid #444;
+        }
+        .progress-bar-fill {
+            height: 100%; width: 0%; background: var(--mrt-gold);
+            transition: width 0.5s ease; box-shadow: 0 0 10px var(--mrt-gold);
+        }
+
+        .input-field {
+            width: 100%; background: #222; border: 1px solid #444; color: white;
+            padding: 12px; border-radius: 10px; margin-bottom: 15px; text-align: right;
+            outline: none; transition: border 0.3s;
+        }
+        .input-field:focus { border-color: var(--mrt-gold); }
+
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <!-- Disclaimer Modal (The message from Developer Kamal) -->
+    <!-- Disclaimer Modal -->
     <div id="disclaimer-modal" class="modal-bg">
         <div class="modal-content">
             <div class="text-yellow-500 text-6xl mb-4"><i class="fas fa-shield-alt"></i></div>
@@ -147,7 +166,7 @@
                     أؤكد لكم أن <span class="text-yellow-500 font-bold">هذه ليست "رباع" (قمار)</span> بل هي مجرد لعبة للتسلية واختبار ثقافتك العامة فقط.
                 </p>
                 <p>
-                    نحن <span class="text-red-500 font-bold">نحارب الربا</span> والمقامرة بكل أشكالها، ولا توجد مبالغ حقيقية في هذه اللعبة؛ فالجوائز رقمية وهمية للتحفيز المعرفي لا غير.
+                    نحن نحارب الربا، والجوائز هنا وهمية لا قيمة مادية لها. استمتع بالتحدي الشنقيطي.
                 </p>
             </div>
             <button onclick="acceptDisclaimer()" class="bg-yellow-500 text-black font-black py-4 px-12 rounded-full hover:scale-105 transition duration-300 shadow-lg shadow-yellow-500/20">أوافق وأفهم ذلك</button>
@@ -160,12 +179,20 @@
             <a href="https://www.facebook.com/share/18XyBrMzKY/" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
             <a href="https://www.tiktok.com/@hhfufjdg?_r=1&_t=ZS-95SR1m43XJE" target="_blank" class="social-icon"><i class="fab fa-tiktok"></i></a>
         </div>
-        <div onclick="openSupport()" class="support-btn-top-right"><i class="fas fa-headset"></i><span>الدعم الفني</span></div>
+        
+        <!-- أزرار الزاوية العلوية اليمنى (دعم المشروع ثم الدعم الفني) -->
+        <div onclick="openDonate()" class="support-btn-top-right" style="top: 20px; background: rgba(255, 215, 0, 0.15); border-color: var(--mrt-gold);">
+            <i class="fas fa-gift text-yellow-500"></i><span class="text-yellow-500">دعم المشروع</span>
+        </div>
+        <div onclick="openSupport()" class="support-btn-top-right" style="top: 75px;">
+            <i class="fas fa-headset"></i><span>الدعم الفني</span>
+        </div>
+
         <div class="camel-silhouette">🐪</div>
         <div class="desert-dunes"></div>
         <div class="z-10 text-center px-4">
             <h1 class="hero-title">من سيربح<br>المليون أوقية</h1>
-            <p class="text-yellow-500 font-bold tracking-[0.3em] mt-6 mb-12">موريتانيا 🇲🇷 بلاد المليون شاعر</p>
+            <p class="text-yellow-500 font-bold tracking-[0.3em] mt-6 mb-12">موريتانيا 🇲🇷 تحدي الثقافة والذكاء</p>
             <button onclick="startGame()" class="start-btn">ابدأ المسابقة</button>
         </div>
         <div class="absolute bottom-4 text-gray-500 text-xs z-30">تطوير: كمال</div>
@@ -173,18 +200,19 @@
 
     <!-- Game UI -->
     <div id="game-ui">
-        <div class="flex flex-col lg:flex-row items-center justify-center gap-10 w-full h-full p-6">
+        <div class="flex flex-col lg:flex-row items-center justify-center gap-6 w-full h-full p-4">
             <div id="prize-sidebar" class="sidebar hidden lg:block"></div>
             <div class="w-full max-w-4xl flex flex-col items-center">
-                <div class="flex justify-center gap-4 mb-8">
+                <div class="flex justify-center gap-4 mb-4">
                     <button class="w-16 h-12 bg-black border-2 border-yellow-500 rounded-full text-yellow-500 font-bold hover:bg-yellow-500 hover:text-black transition">50:50</button>
                     <button class="w-16 h-12 bg-black border-2 border-yellow-500 rounded-full text-yellow-500 font-bold hover:bg-yellow-500 hover:text-black transition">📞</button>
                     <button class="w-16 h-12 bg-black border-2 border-yellow-500 rounded-full text-yellow-500 font-bold hover:bg-yellow-500 hover:text-black transition">👥</button>
                 </div>
-                <div class="q-box w-full mb-8">
-                    <h2 id="q-text" class="text-2xl md:text-3xl font-bold leading-relaxed"></h2>
+                <div class="q-box w-full mb-6">
+                    <div id="current-step-display" class="text-yellow-500 text-sm mb-2 font-bold">السؤال الحالي</div>
+                    <h2 id="q-text" class="text-xl md:text-2xl font-bold leading-relaxed"></h2>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
                     <button onclick="checkAnswer(0)" class="ans-btn" id="opt-0"><span class="text-yellow-500 font-black ml-4">أ:</span><span class="label"></span></button>
                     <button onclick="checkAnswer(1)" class="ans-btn" id="opt-1"><span class="text-yellow-500 font-black ml-4">ب:</span><span class="label"></span></button>
                     <button onclick="checkAnswer(2)" class="ans-btn" id="opt-2"><span class="text-yellow-500 font-black ml-4">ج:</span><span class="label"></span></button>
@@ -192,25 +220,91 @@
                 </div>
             </div>
         </div>
+
+        <!-- Progress Footer -->
+        <div class="bottom-progress">
+            <div class="text-white font-bold text-lg mb-1">الرصيد الحالي: <span id="current-prize-val" class="text-yellow-500">0</span> أوقية</div>
+            <div class="progress-bar-container">
+                <div id="progress-fill" class="progress-bar-fill"></div>
+            </div>
+        </div>
     </div>
 
-    <!-- Support Modal -->
-    <div id="support-modal" class="fixed inset-0 bg-black/95 hidden z-[400] flex items-center justify-center p-6 backdrop-blur-md">
+    <!-- Result Modal -->
+    <div id="result-modal" class="fixed inset-0 bg-black/95 hidden z-[500] flex items-center justify-center p-6 backdrop-blur-md">
+        <div class="bg-zinc-900 border-2 border-yellow-500 p-8 rounded-[40px] w-full max-w-md text-center shadow-2xl">
+            <div id="result-icon" class="text-6xl mb-4"></div>
+            <h3 id="result-title" class="text-3xl font-bold mb-4"></h3>
+            <p id="result-message" class="text-lg text-gray-300 mb-8"></p>
+            <button onclick="location.reload()" class="w-full bg-yellow-500 text-black font-bold py-3 rounded-full hover:bg-yellow-400 transition hover:scale-105">العودة للرئيسية</button>
+        </div>
+    </div>
+
+    <!-- Donate Modal (WhatsApp) -->
+    <div id="donate-modal" class="fixed inset-0 bg-black/95 hidden z-[400] flex items-center justify-center p-6 backdrop-blur-md overflow-y-auto">
+        <div class="bg-zinc-900 border-2 border-yellow-500 p-8 rounded-[40px] w-full max-w-md text-center">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="closeDonate()" class="text-gray-500 text-4xl hover:text-white">&times;</button>
+                <h3 class="text-2xl font-bold text-yellow-500">دعم المشروع</h3>
+            </div>
+            
+            <div class="space-y-4 mb-6">
+                <p class="text-white text-md">لدعم المطور والاستمرار في التحديثات، يمكنك تحويل أي مبلغ على الحساب البنكي التالي:</p>
+                <div class="bg-black border border-yellow-500 py-3 px-4 rounded-xl text-3xl font-black text-yellow-500 tracking-widest">
+                    32188820
+                </div>
+                <p class="text-gray-400 text-sm">بنكيلي، السداد، بيم، أو غيرها</p>
+            </div>
+
+            <div class="space-y-2 text-right">
+                <label class="text-yellow-500 font-bold block mb-2"><i class="fas fa-image ml-2"></i>إرفاق صورة التحويل:</label>
+                <input type="file" id="donate-img" accept="image/*" class="input-field bg-black !text-right text-sm">
+            </div>
+
+            <button id="send-donate-btn" class="w-full bg-green-600 text-white font-bold py-3 rounded-full mt-4 flex items-center justify-center gap-2 hover:bg-green-500 transition" onclick="triggerDonate()">
+                <i class="fab fa-whatsapp"></i> إرسال الإثبات عبر واتساب
+            </button>
+        </div>
+    </div>
+
+    <!-- Support Modal (Email) -->
+    <div id="support-modal" class="fixed inset-0 bg-black/95 hidden z-[400] flex items-center justify-center p-6 backdrop-blur-md overflow-y-auto">
         <div class="bg-zinc-900 border-2 border-yellow-500 p-8 rounded-[40px] w-full max-w-md text-center">
             <div class="flex justify-between items-center mb-6">
                 <button onclick="closeSupport()" class="text-gray-500 text-4xl hover:text-white">&times;</button>
-                <h3 class="text-2xl font-bold text-yellow-500">مركز المساعدة</h3>
+                <h3 class="text-2xl font-bold text-yellow-500">الدعم الفني</h3>
             </div>
-            <div id="support-list">
-                <div class="support-option-box p-4 border border-zinc-700 rounded-xl mb-2 flex justify-between cursor-pointer hover:bg-zinc-800" onclick="selectIssue(this, 'اللعبة تتوقف فجأة')"><span>اللعبة تتوقف فجأة</span><i class="fas fa-bug text-red-500"></i></div>
-                <div class="support-option-box p-4 border border-zinc-700 rounded-xl mb-2 flex justify-between cursor-pointer hover:bg-zinc-800" onclick="selectIssue(this, 'اقتراح أسئلة جديدة')"><span>اقتراح أسئلة جديدة</span><i class="fas fa-lightbulb text-yellow-500"></i></div>
-                <div class="support-option-box p-4 border border-zinc-700 rounded-xl mb-2 flex justify-between cursor-pointer hover:bg-zinc-800" onclick="selectIssue(this, 'تبليغ عن خطأ في سؤال')"><span>تبليغ عن خطأ في سؤال</span><i class="fas fa-exclamation-triangle text-orange-500"></i></div>
+            
+            <div class="space-y-1">
+                <input type="text" id="sup-name" placeholder="الاسم الكامل" class="input-field">
+                <input type="tel" id="sup-phone" placeholder="رقم الهاتف" class="input-field">
+                <select id="sup-issue-type" class="input-field">
+                    <option value="" disabled selected>نوع المشكلة</option>
+                    <option value="عطل تقني">عطل تقني</option>
+                    <option value="خطأ في سؤال">خطأ في سؤال</option>
+                    <option value="اقتراح">اقتراح جديد</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
+                <textarea id="sup-desc" placeholder="اشرح المشكلة هنا..." class="input-field h-24 resize-none"></textarea>
             </div>
-            <button id="send-btn" class="w-full bg-green-600 text-white font-bold py-3 rounded-full mt-4" onclick="triggerSend()">إرسال للدعم</button>
+
+            <button id="send-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-full mt-4 flex items-center justify-center gap-2 hover:bg-blue-500 transition" onclick="triggerSupport()">
+                <i class="fas fa-envelope"></i> إرسال عبر البريد الإلكتروني
+            </button>
         </div>
     </div>
 
     <script>
+        const sfxClick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        const sfxCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3');
+        const sfxWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/3112/3112-preview.mp3');
+        const sfxWin = new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
+
+        function playSound(audioEl) {
+            audioEl.currentTime = 0;
+            audioEl.play().catch(e => { console.log('Autoplay blocked'); });
+        }
+
         const allQuestions = [
             { q: "ما هي عاصمة موريتانيا؟", a: ["نواذيبو", "نواكشوط", "أطار", "روصو"], c: 1 },
             { q: "ما هي العملة الرسمية في موريتانيا؟", a: ["الفرنك", "الدرهم", "الأوقية", "الدينار"], c: 2 },
@@ -237,76 +331,84 @@
             { q: "متى يتم الاحتفال بعيد الاستقلال الوطني في موريتانيا؟", a: ["28 نوفمبر", "12 ديسمبر", "1 يناير", "5 يوليو"], c: 0 },
             { q: "ما هو الرمز الدولي للهاتف في موريتانيا؟", a: ["+212", "+221", "+222", "+213"], c: 2 },
             { q: "ما هي الولاية التي عاصمتها مدينة 'سيلبابي'؟", a: ["كيدي ماغا", "كوركول", "لبراكنة", "لعصابة"], c: 0 },
-            { q: "من هو الفقيه الموريتاني الذي وضع أول دستور للبلاد؟", a: ["با ممدو صمبا بولي", "الشيخ بن حَمَّى", "محمد ولد الشيخ", "المختار ولد داداه"], c: 1 },
+            { q: "من هو الفقيه الموريتاني الذي وضع أول دستور للبلاد بعد الاستقلال؟", a: ["با ممدو صمبا بولي", "الشيخ بن حَمَّى", "محمد ولد الشيخ", "المختار ولد داداه"], c: 1 },
             { q: "ما هو الاسم الأصلي لمنطقة 'آدرار' في الخرائط البرتغالية القديمة؟", a: ["مونتي كلارو", "بورتو غراندي", "كاب بلانكو", "تيرس الغربية"], c: 0 },
-            { q: "في أي عام تأسست أول مدرسة نظامية في مدينة بوتلميت؟", a: ["1910", "1914", "1920", "1905"], c: 1 },
-            { q: "ما هو الارتفاع الدقيق لقمة 'كدية الجل'؟", a: ["915 متر", "850 متر", "1010 متر", "780 متر"], c: 0 },
+            { q: "في أي عام تأسست أول مدرسة نظامية في مدينة بوتلميت (مدرسة الشيوخ)؟", a: ["1910", "1914", "1920", "1905"], c: 1 },
+            { q: "ما هو الارتفاع الدقيق لقمة 'كدية الجل' عن سطح البحر؟", a: ["915 متر", "850 متر", "1010 متر", "780 متر"], c: 0 },
             { q: "من هو الشاعر الموريتاني صاحب ديوان 'أغاني الوطن'؟", a: ["محمد ولد عبدي", "أحمدو ولد عبد القادر", "محمد الحافظ ولد أحمدو", "كابر هاشم"], c: 1 },
             { q: "ما هي المعركة التي استشهد فيها القائد الفرنسي 'كزافييه كبولاني'؟", a: ["معركة تجكجة", "معركة أم التونسي", "معركة النيملان", "معركة لعيون"], c: 0 },
-            { q: "في أي سنة تم إنشاء العملة الوطنية (الأوقية)؟", a: ["1970", "1973", "1975", "1968"], c: 1 },
-            { q: "ما هي المدينة التي كانت تسمى 'آزوكي' قديماً؟", a: ["آزوكي", "وادان", "أوجفت", "كصر البركة"], c: 0 },
+            { q: "في أي سنة تم إنشاء العملة الوطنية (الأوقية) وفصلها عن الفرنك الإفريقي؟", a: ["1970", "1973", "1975", "1968"], c: 1 },
+            { q: "ما هي المدينة التي كانت تسمى 'أوجفت' قديماً في السجلات التاريخية؟", a: ["آزوكي", "وادان", "أوجفت", "كصر البركة"], c: 0 },
             { q: "ما هو العمق الأقصى لمنجم 'قلب الغين' للحديد؟", a: ["200 متر", "350 متر", "400 متر", "500 متر"], c: 2 },
-            { q: "من هو العالم الموريتاني الذي ألف كتاب 'فتح الشكور'؟", a: ["البرتلي الولاتي", "ابن الأعمش العلوي", "النابغة القلاوي", "المختار ولد بونعمة"], c: 0 },
+            { q: "من هو العالم الموريتاني الذي ألف كتاب 'فتح الشكور في معرفة أعيان علماء التكرور'؟", a: ["البرتلي الولاتي", "ابن الأعمش العلوي", "النابغة القلاوي", "المختار ولد بونعمة"], c: 0 },
             { q: "أي من هذه الأودية يعتبر الأطول في منطقة الحوض الشرقي؟", a: ["وادي كراكر", "وادي الحطب", "وادي لعصابة", "وادي الشاش"], c: 1 },
-            { q: "ما هي الاتفاقية التي بموجبها انسحبت موريتانيا من 'تيرس الغربية'؟", a: ["اتفاقية الجزائر", "اتفاقية مدريد", "اتفاقية أكادير", "اتفاقية لوساكا"], c: 0 },
-            { q: "ما هو الاسم العلمي للشجرة التي يستخرج منها 'العلك'؟", a: ["أكاسيا سينغال", "أكاسيا نيلوتيكا", "بلانيتس أيجيبتياكا", "زيزيفوس موريشيانا"], c: 0 },
-            { q: "من هو أول أمين عام موريتاني لمنظمة (OMVS)؟", a: ["أحمد ولد سيدي بابا", "الشيخ ولد أحمدو", "المختار ولد هيبة", "محمد ولد هيبة"], c: 0 },
+            { q: "ما هي الاتفاقية التي بموجبها انسحبت موريتانيا من 'تيرس الغربية' عام 1979؟", a: ["اتفاقية الجزائر", "اتفاقية مدريد", "اتفاقية أكادير", "اتفاقية لوساكا"], c: 0 },
+            { q: "ما هو الاسم العلمي للشجرة التي يستخرج منها 'العلك' (الصمغ العربي) في موريتانيا؟", a: ["أكاسيا سينغال", "أكاسيا نيلوتيكا", "بلانيتس أيجيبتياكا", "زيزيفوس موريشيانا"], c: 0 },
+            { q: "من هو أول أمين عام موريتاني لمنظمة استثمار نهر السنغال (OMVS)؟", a: ["أحمد ولد سيدي بابا", "الشيخ ولد أحمدو", "المختار ولد هيبة", "محمد ولد هيبة"], c: 0 },
             { q: "في أي ولاية تقع محمية 'جاولينج' الطبيعية؟", a: ["اترارزة", "لبراكنة", "كيدي ماغا", "داخلت نواذيبو"], c: 0 },
             { q: "ما هي القبيلة التي أسست إمارة 'آدرار' تاريخياً؟", a: ["إدوعيش", "أهل عثمان", "أولاد يحيى بن عثمان", "مشظوف"], c: 2 },
-            { q: "ما هو طول السكة الحديدية بين 'الزويرات' و 'نواذيبو'؟", a: ["650 كم", "704 كم", "800 كم", "550 كم"], c: 1 },
-            { q: "من هو الأديب الموريتاني الذي فاز بجائزة 'نجيب محفوظ'؟", a: ["موسى ولد ابنو", "محمد ولد محمد سالم", "ممد ولد أحمد", "المختار ولد السعد"], c: 1 },
+            { q: "ما هو طول السكة الحديدية بين 'الزويرات' و'نواذيبو'؟", a: ["650 كم", "704 كم", "800 كم", "550 كم"], c: 1 },
+            { q: "من هو الأديب الموريتاني الذي فاز بجائزة 'نجيب محفوظ' للرواية؟", a: ["موسى ولد ابنو", "محمد ولد محمد سالم", "ممد ولد أحمد", "المختار ولد السعد"], c: 1 },
             { q: "ما هو الاسم القديم لمدينة 'لعيون' عاصمة الحوض الغربي؟", a: ["لعيون العتروس", "فم لعيون", "تكانت الغربية", "انيفرار"], c: 0 },
-            { q: "في أي عام تم اكتشاف حقل 'شنقيط' النفطي؟", a: ["2001", "1998", "2005", "2003"], c: 0 },
-            { q: "ما هو لقب الفقيه 'سيدي عبد الله ولد الحاج إبراهيم'؟", a: ["صاحب مراقي السعود", "صاحب النوازل", "قاضي القضاة", "مجدد القرن"], c: 0 },
-            { q: "أي مدينة كانت مركزاً لقيادة المستعمر قبل نواكشوط؟", a: ["سانت لويس (اندر)", "داكار", "روصو", "نواذيبو"], c: 0 },
+            { q: "في أي عام تم اكتشاف حقل 'شنقيط' النفطي قبالة السواحل الموريتانية؟", a: ["2001", "1998", "2005", "2003"], c: 0 },
+            { q: "ما هو لقب الفقيه 'سيدي عبد الله ولد الحاج إبراهيم' الأشهر؟", a: ["صاحب مراقي السعود", "صاحب النوازل", "قاضي القضاة", "مجدد القرن"], c: 0 },
+            { q: "أي مدينة موريتانية كانت مركزاً لقيادة 'موريتانيا المستعمرة' قبل نواكشوط؟", a: ["سانت لويس (اندر)", "داكار", "روصو", "نواذيبو"], c: 0 },
             { q: "ما هي أعلى درجة حرارة مسجلة رسمياً في مدينة 'أطار'؟", a: ["48 درجة", "50 درجة", "52 درجة", "45 درجة"], c: 2 },
-            { q: "من هو الملحن الذي وضع ألحان النشيد الوطني القديم؟", a: ["بابا ولد هيدالة", "سيداتي ولد آبه", "سيبويه ولد المجلسي", "توفا غاي"], c: 1 },
+            { q: "من هو الملحن الموريتاني الذي وضع ألحان النشيد الوطني القديم؟", a: ["بابا ولد هيدالة", "سيداتي ولد آبه", "سيبويه ولد المجلسي", "توفا غاي"], c: 1 },
             { q: "ما هي 'السبخة' الأكبر في الشمال الموريتاني؟", a: ["سبخة الجميلة", "سبخة ندرهامشا", "سبخة ماري", "سبخة آمليل"], c: 1 },
             { q: "أي ملك مغربي زار موريتانيا في رحلة تاريخية عام 2001؟", a: ["الحسن الثاني", "محمد السادس", "محمد الخامس", "مولاي رشيد"], c: 1 },
-            { q: "ما هو النوع الموريتاني من الإبل المشهور بسرعته؟", a: ["آزاييل", "المهارى", "البخت", "القعدان"], c: 1 },
-            { q: "في أي سنة تم تأسيس جامعة نواكشوط؟", a: ["1981", "1975", "1985", "1990"], c: 0 },
+            { q: "ما هو النوع الموريتاني من الإبل المشهور بسرعته في السباقات؟", a: ["آزاييل", "المهارى", "البخت", "القعدان"], c: 1 },
+            { q: "في أي سنة تم تأسيس جامعة نواكشوط (جامعة نواكشوط العصرية حالياً)؟", a: ["1981", "1975", "1985", "1990"], c: 0 },
             { q: "ما هو الاسم الجغرافي للمنطقة التي تفصل بين آدرار وتكانت؟", a: ["الخط", "ظهر تكانت", "كاف الركيبة", "آكشار"], c: 2 },
-            { q: "من هو القائد الذي قاد معركة 'ودان' عام 1912؟", a: ["الشيخ ماء العينين", "أحمد ولد أيدَّه", "بكار ولد أحمدو", "سيدي ولد مولاي الزين"], c: 1 },
-            { q: "ما هي المادة الخام التي تستخرج من 'أكجوجت'؟", a: ["الفوسفات", "النحاس", "الجبس", "الملح"], c: 1 },
+            { q: "من هو القائد الذي قاد معركة 'ودان' ضد المستعمر عام 1912؟", a: ["الشيخ ماء العينين", "أحمد ولد أيدَّه", "بكار ولد أحمدو", "سيدي ولد مولاي الزين"], c: 1 },
+            { q: "ما هي المادة الخام التي تستخرج من 'أكجوجت' بشكل أساسي؟", a: ["الفوسفات", "النحاس", "الجبس", "الملح"], c: 1 },
             { q: "ما هو اسم البحيرة الموسمية الكبيرة في ولاية 'لبراكنة'؟", a: ["بحيرة الركيز", "بحيرة مال", "بحيرة كنكوصة", "بحيرة محمودة"], c: 1 },
-            { q: "من هو أول موريتاني شغل منصب رئيس الجمعية العامة للأمم المتحدة؟", a: ["با ممدو امباري", "حمادي ولد اميمو", "لم يكن هناك موريتاني", "سيدي محمد ولد بوبكر"], c: 2 },
-            { q: "ما هي المدينة التي تشتهر بـ 'مخطوطات ولاتة'؟", a: ["ولاتة", "تمبدغة", "جكني", "النعمة"], c: 0 },
+            { q: "من هو أول موريتاني شغل منصب 'رئيس الجمعية العامة للأمم المتحدة'؟", a: ["با ممدو امباري", "حمادي ولد اميمو", "لم يكن هناك موريتاني", "سيدي محمد ولد بوبكر"], c: 2 },
+            { q: "ما هي المدينة الموريتانية التي تشتهر بـ 'مخطوطات ولاتة'؟", a: ["ولاتة", "تمبدغة", "جكني", "النعمة"], c: 0 },
             { q: "ما هو الاسم الشعبي لنوع من 'الكسكس' الموريتاني الغليظ؟", a: ["البصام", "العيش", "بلغمان", "كسكس بالحوت"], c: 1 },
-            { q: "في أي عام تم تنظيم أول مهرجان للمدن القديمة؟", a: ["2011", "2012", "2010", "2009"], c: 0 },
+            { q: "في أي عام تم تنظيم أول مهرجان للمدن القديمة في موريتانيا؟", a: ["2010", "2011", "2012", "2009"], c: 1 },
             { q: "ما هي الولاية التي تقع فيها مدينة 'باركيول'؟", a: ["لعصابة", "كوركول", "كيدي ماغا", "لبراكنة"], c: 0 },
-            { q: "ما هو اسم القمر الصناعي الموريتاني الأول؟", a: ["موريسات-1", "شنقيط-1", "لا يوجد حالياً", "ناصر-1"], c: 2 },
+            { q: "ما هو اسم القمر الصناعي الموريتاني الأول (مشروع تعليمي)؟", a: ["موريسات-1", "شنقيط-1", "لا يوجد حالياً", "ناصر-1"], c: 2 },
             { q: "أي من هذه الأنهار الجافة يصب في المحيط الأطلسي؟", a: ["وادي الشبكة", "وادي كراكر", "وادي ميرة", "وادي الساقية"], c: 0 },
             { q: "من هو الفنان الموريتاني الراحل الملقب بـ 'فنان الشعب'؟", a: ["ديمي بنت آبه", "الخليفة ولد ايدَّه", "سيداتي ولد آبه", "ببا ولد النانة"], c: 1 },
             { q: "ما هي أكبر جزيرة في أرخبيل 'حوض آرغين'؟", a: ["جزيرة تيدرة", "جزيرة آمي", "جزيرة كياون", "جزيرة نيرومي"], c: 0 },
             { q: "ما هي المدينة الموريتانية التي تسمى 'بوابة الصحراء'؟", a: ["أكجوجت", "أطار", "تجكجة", "خاي"], c: 1 },
-            { q: "في أي عهد رئاسي تم إقرار نظام 'التعددية الحزبية'؟", a: ["معاوية ولد الطايع", "محمد خونة ولد هيدالة", "المختار ولد داداه", "اعل ولد محمد فال"], c: 0 },
+            { q: "في أي عهد رئاسي تم إقرار نظام 'التعددية الحزبية' في موريتانيا؟", a: ["معاوية ولد الطايع", "محمد خونة ولد هيدالة", "المختار ولد داداه", "اعل ولد محمد فال"], c: 0 },
             { q: "ما هو اسم الهضبة الصخرية التي تقع عليها مدينة 'تشيت'؟", a: ["هضبة آدرار", "هضبة تكانت", "هضبة الحوض", "هضبة إنشيري"], c: 1 },
             { q: "ما هي لغة 'السوننكي' في التصنيف اللغوي؟", a: ["لغة أفرو-آسيوية", "لغة نيجيرية-كونغولية", "لغة صحراوية", "لغة نيلية"], c: 1 },
-            { q: "ما هو الاسم التاريخي لميناء 'نواذيبو'؟", a: ["بورت إتيان", "بورت لويس", "سان بيدرو", "بورتو نوفو"], c: 0 },
-            { q: "كم بلغت ميزانية موريتانيا في أول سنة استقلال؟", a: ["10 ملايين دولار", "2.5 مليار فرنك", "500 مليون أوقية", "مليار فرنك"], c: 1 },
-            { q: "ما هي الشجرة التي تسمى 'تيدوم'؟", a: ["الباوباب", "الطلح", "السدر", "القتاد"], c: 0 },
-            { q: "من هو أمير آدرار الذي واجه الاستعمار في 'حمدون'؟", a: ["أحمد ولد أيدَّه", "سيدي ولد مولاي الزين", "محمد لحبيب", "أعمر ولد المختار"], c: 0 },
+            { q: "ما هو الاسم التاريخي لميناء 'نواذيبو' قبل الاستقلال؟", a: ["بورت إتيان", "بورت لويس", "سان بيدرو", "بورتو نوفو"], c: 0 },
+            { q: "كم بلغت ميزانية موريتانيا في أول سنة استقلال (تقريباً)؟", a: ["10 ملايين دولار", "2.5 مليار فرنك", "500 مليون أوقية", "مليار فرنك"], c: 1 },
+            { q: "ما هي الشجرة التي تسمى 'تيدوم' في اللهجة المحلية؟", a: ["الباوباب", "الطلح", "السدر", "القتاد"], c: 0 },
+            { q: "من هو 'أمير آدرار' الذي واجه الاستعمار في معركة 'حمدون'؟", a: ["أحمد ولد أيدَّه", "سيدي ولد مولاي الزين", "محمد لحبيب", "أعمر ولد المختار"], c: 0 },
             { q: "ما هو اسم أول جريدة صدرت في موريتانيا؟", a: ["الشعب", "القلم", "أخبار موريتانيا", "موريتانيا الجديدة"], c: 0 }
         ];
 
-        let currentSet = [];
         let step = 0;
         let isProcessing = false;
-        const moneyArr = [100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
+        let currentSet = [];
+        const moneyArr = [10, 20, 50, 100, 200, 300, 400, 500, 1000, 2000, 4000, 8000, 12000, 16000, 20000, 32000, 64000, 80000, 100000, 125000, 250000, 400000, 600000, 800000, 1000000];
+
+        window.onload = function() {
+            const hasAccepted = localStorage.getItem('kamal_disclaimer_accepted');
+            if (!hasAccepted) {
+                document.getElementById('disclaimer-modal').style.display = 'flex';
+            }
+        }
 
         function acceptDisclaimer() {
+            playSound(sfxClick);
+            localStorage.setItem('kamal_disclaimer_accepted', 'true');
             document.getElementById('disclaimer-modal').style.display = 'none';
         }
 
         function startGame() {
-            currentSet = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 15);
-            const landing = document.getElementById('landing-ui');
-            const game = document.getElementById('game-ui');
-            landing.style.opacity = '0';
+            playSound(sfxClick);
+            currentSet = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, 25);
+            step = 0;
+            document.getElementById('landing-ui').style.opacity = '0';
             setTimeout(() => {
-                landing.style.display = 'none';
-                game.style.display = 'flex';
-                game.style.opacity = '1';
+                document.getElementById('landing-ui').style.display = 'none';
+                document.getElementById('game-ui').style.display = 'flex';
                 renderSidebar();
                 loadQuestion();
             }, 500);
@@ -315,7 +417,7 @@
         function renderSidebar() {
             const side = document.getElementById('prize-sidebar');
             side.innerHTML = moneyArr.slice().reverse().map((m, i) => {
-                const idx = 14 - i;
+                const idx = 24 - i;
                 return `<div class="prize-row" id="row-${idx}"><span>${idx + 1}</span><span>${m.toLocaleString()}</span></div>`;
             }).join('');
         }
@@ -329,17 +431,23 @@
                 btn.querySelector('.label').innerText = qData.a[i];
                 btn.classList.remove('correct', 'wrong');
             }
-            updateSidebar();
+            updateUIState();
         }
 
-        function updateSidebar() {
+        function updateUIState() {
             document.querySelectorAll('.prize-row').forEach(r => { 
                 r.style.color = "#666"; r.style.background = "transparent"; r.style.fontWeight = "normal";
             });
             const active = document.getElementById(`row-${step}`);
             if(active) { 
-                active.style.color = "black"; active.style.background = "#ffd700"; active.style.fontWeight = "bold"; 
+                active.style.color = "black"; active.style.background = "#ffd700"; active.style.fontWeight = "bold";
+                active.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
+
+            const currentMoney = step > 0 ? moneyArr[step-1] : 0;
+            document.getElementById('current-prize-val').innerText = currentMoney.toLocaleString();
+            const progressPercent = (step / 25) * 100;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
         }
 
         function checkAnswer(idx) {
@@ -350,36 +458,92 @@
             const correctBtn = document.getElementById(`opt-${correctIdx}`);
 
             if(idx === correctIdx) {
+                playSound(sfxCorrect);
                 selectedBtn.classList.add('correct');
                 setTimeout(() => {
                     step++;
-                    if(step < 15) loadQuestion();
-                    else { alert('تبروك! لقد فزت بمليون أوقية وهمية!'); location.reload(); }
+                    if(step < 25) {
+                        loadQuestion();
+                    } else {
+                        playSound(sfxWin);
+                        updateUIState();
+                        showResult('بطل موريتانيا!', 'لقد أجبت على كافة الأسئلة بنجاح ووصلت للمليون!', true);
+                    }
                 }, 1000);
             } else {
+                playSound(sfxWrong);
                 selectedBtn.classList.add('wrong');
                 correctBtn.classList.add('correct');
                 setTimeout(() => {
-                    alert('إجابة خاطئة! حظاً موفقاً في المرة القادمة.');
-                    location.reload();
+                    showResult('انتهت المحاولة!', `توقفت عند مبلغ ${step > 0 ? moneyArr[step-1].toLocaleString() : 0} أوقية. حاول مجدداً!`, false);
                 }, 1500);
             }
         }
 
-        let selIssue = "";
+        function showResult(title, message, isWin) {
+            const modal = document.getElementById('result-modal');
+            document.getElementById('result-title').innerText = title;
+            document.getElementById('result-title').className = `text-3xl font-bold mb-4 ${isWin ? 'text-green-500' : 'text-red-500'}`;
+            document.getElementById('result-message').innerText = message;
+            document.getElementById('result-icon').innerHTML = isWin ? '<i class="fas fa-trophy text-yellow-500"></i>' : '<i class="fas fa-times-circle text-red-500"></i>';
+            modal.classList.remove('hidden');
+        }
+
+        // Functions for Support (Email)
         function openSupport() { document.getElementById('support-modal').classList.remove('hidden'); }
         function closeSupport() { document.getElementById('support-modal').classList.add('hidden'); }
-        function selectIssue(el, txt) {
-            document.querySelectorAll('.support-option-box').forEach(b => b.classList.remove('bg-zinc-800'));
-            el.classList.add('bg-zinc-800');
-            selIssue = txt;
+        function triggerSupport() {
+            const name = document.getElementById('sup-name').value.trim();
+            const phone = document.getElementById('sup-phone').value.trim();
+            const type = document.getElementById('sup-issue-type').value;
+            const desc = document.getElementById('sup-desc').value.trim();
+
+            if(!name || !phone || !type || !desc) {
+                const sendBtn = document.getElementById('send-btn');
+                const originalText = sendBtn.innerHTML;
+                sendBtn.innerText = "يرجى ملء جميع الخانات";
+                sendBtn.classList.add('bg-red-600');
+                setTimeout(() => {
+                    sendBtn.innerHTML = originalText;
+                    sendBtn.classList.remove('bg-red-600');
+                }, 2000);
+                return;
+            }
+
+            const subject = encodeURIComponent(`طلب دعم فني: ${type}`);
+            const body = encodeURIComponent(`الاسم: ${name}\nرقم الهاتف: ${phone}\nنوع المشكلة: ${type}\n\nتفاصيل المشكلة:\n${desc}`);
+            window.location.href = `mailto:kamaleby463@gmail.com?subject=${subject}&body=${body}`;
         }
-        function triggerSend() {
-            if(!selIssue) return;
-            window.open(`https://wa.me/qr/M53QU6UR7ZSZM1?text=${encodeURIComponent("أواجه مشكلة بخصوص: " + selIssue)}`, '_blank');
+
+        // Functions for Donate (WhatsApp)
+        function openDonate() { document.getElementById('donate-modal').classList.remove('hidden'); }
+        function closeDonate() { document.getElementById('donate-modal').classList.add('hidden'); }
+        function triggerDonate() {
+            const fileInput = document.getElementById('donate-img');
+            const btn = document.getElementById('send-donate-btn');
+            const originalText = btn.innerHTML;
+
+            if(!fileInput.files || fileInput.files.length === 0) {
+                btn.innerText = "يرجى إرفاق صورة التحويل أولاً";
+                btn.classList.remove('bg-green-600');
+                btn.classList.add('bg-red-600');
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('bg-red-600');
+                    btn.classList.add('bg-green-600');
+                }, 2000);
+                return;
+            }
+
+            btn.innerText = "سيفتح واتساب.. يرجى إرسال الصورة هناك!";
+            
+            setTimeout(() => {
+                const message = encodeURIComponent(`مرحباً كمال، أود دعم مشروعك (من سيربح المليون). لقد قمت بتحويل مبلغ على الحساب 32188820، وهذه صورة التحويل سأرسلها لك الآن.`);
+                window.open(`https://wa.me/qr/M53QU6UR7ZSZM1?text=${message}`, '_blank');
+                closeDonate();
+                btn.innerHTML = originalText;
+            }, 1500);
         }
     </script>
 </body>
-</html>
-
-
+                </html>
