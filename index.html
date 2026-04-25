@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -171,6 +170,22 @@
         <i class="fas fa-volume-up"></i>
     </div>
 
+    <!-- نافذة اختيار طريقة اللعب المضافة حديثاً -->
+    <div id="mode-modal" class="fixed inset-0 bg-black/95 hidden z-[600] flex items-center justify-center p-6 backdrop-blur-md">
+        <div class="bg-zinc-900 border-2 border-yellow-500 p-8 rounded-[40px] w-full max-w-md text-center shadow-2xl">
+            <h3 class="text-3xl font-bold mb-6 text-yellow-500">اختر طريقة اللعب</h3>
+            <div class="space-y-4">
+                <button onclick="selectMode(true)" class="w-full bg-yellow-500 text-black font-bold py-4 rounded-full hover:bg-yellow-400 transition hover:scale-105 flex justify-center items-center gap-2">
+                    <i class="fas fa-volume-up"></i> اللعب بصوت (قراءة السؤال)
+                </button>
+                <button onclick="selectMode(false)" class="w-full bg-transparent border-2 border-yellow-500 text-yellow-500 font-bold py-4 rounded-full hover:bg-yellow-500 hover:text-black transition hover:scale-105 flex justify-center items-center gap-2">
+                    <i class="fas fa-gamepad"></i> اللعب الطبيعي
+                </button>
+            </div>
+            <button onclick="closeModeModal()" class="mt-6 text-gray-400 hover:text-white text-sm underline">رجوع</button>
+        </div>
+    </div>
+
     <div id="disclaimer-modal" class="modal-bg">
         <div class="modal-content">
             <div class="text-yellow-500 text-6xl mb-4"><i class="fas fa-shield-alt"></i></div>
@@ -313,6 +328,7 @@
         bgMusic.volume = 0.3;
 
         let isMuted = false;
+        let isVoiceMode = false; // المتغير الجديد لتحديد طريقة اللعب
         let step = 0;
         let isProcessing = false;
         let currentSet = [];
@@ -465,12 +481,24 @@
             audioEl.play().catch(e => { console.log('Autoplay blocked'); });
         }
 
+        // دالة جديدة لقراءة النص بالصوت
+        function speakText(text) {
+            if ('speechSynthesis' in window && !isMuted) {
+                window.speechSynthesis.cancel(); // إيقاف أي قراءة سابقة
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ar-SA'; // نطق باللغة العربية
+                utterance.rate = 0.9; // تقليل السرعة قليلاً لوضوح النطق
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
         function toggleMute() {
             isMuted = !isMuted;
             const btn = document.getElementById('mute-btn');
             if(isMuted) {
                 btn.innerHTML = '<i class="fas fa-volume-mute text-red-500"></i>';
                 bgMusic.pause();
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             } else {
                 btn.innerHTML = '<i class="fas fa-volume-up text-yellow-500"></i>';
                 if(document.getElementById('game-ui').style.display === 'flex') {
@@ -486,7 +514,25 @@
             isProcessing = false;
         }
 
+        // دالة إظهار نافذة اختيار اللعب بدلاً من بدء اللعبة مباشرة
         function startGame() {
+            playSound(sfxClick);
+            document.getElementById('mode-modal').classList.remove('hidden');
+        }
+
+        function closeModeModal() {
+            document.getElementById('mode-modal').classList.add('hidden');
+        }
+
+        // دالة اختيار وضع اللعب وبدء اللعبة
+        function selectMode(voice) {
+            isVoiceMode = voice;
+            closeModeModal();
+            beginGame();
+        }
+
+        // الدالة الأساسية لبدء اللعبة (كانت startGame سابقاً)
+        function beginGame() {
             playSound(sfxClick);
             resetGameLogic();
             if(!isMuted) bgMusic.play();
@@ -502,6 +548,7 @@
 
         function resetToHome() {
             playSound(sfxClick);
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel(); // إيقاف الصوت عند العودة
             document.getElementById('result-modal').classList.add('hidden');
             document.getElementById('game-ui').style.display = 'none';
             document.getElementById('landing-ui').style.display = 'flex';
@@ -528,6 +575,11 @@
                 btn.classList.remove('correct', 'wrong');
             }
             updateUIState();
+            
+            // قراءة السؤال إن كان اللعب الصوتي مفعلاً
+            if (isVoiceMode) {
+                speakText(qData.q);
+            }
         }
 
         function updateUIState() {
@@ -549,6 +601,10 @@
         function checkAnswer(idx) {
             if(isProcessing) return;
             isProcessing = true;
+
+            // إيقاف النطق بمجرد اختيار الإجابة
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+
             const correctIdx = currentSet[step].c;
             const selectedBtn = document.getElementById(`opt-${idx}`);
             const correctBtn = document.getElementById(`opt-${correctIdx}`);
@@ -650,5 +706,3 @@
     </script>
 </body>
 </html>
-
-
